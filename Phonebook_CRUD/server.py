@@ -1,5 +1,5 @@
 from bson import ObjectId
-from flask import Flask, Response, request
+from flask import Flask, Response, request, jsonify
 import pymongo
 import json
 
@@ -46,13 +46,11 @@ def update_one(id):
 
 @app.route("/", methods=["GET"])
 def getUsers():
-    users = db.users.find()
+    users = list(db.users.find())
     print([user for user in users])
-    return Response(
-        response=json.dumps(
-            {}),
-        status=200,
-        mimetype="application/json")
+    for itr in users:
+        itr["_id"] = str(itr["_id"])
+    return jsonify(users)
 
 
 if __name__ == "__main__":
